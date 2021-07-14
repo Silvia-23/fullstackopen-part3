@@ -1,4 +1,4 @@
-POST http://localhost:3001/api/persons
+POST https://baroque-saucisson-65827.herokuapp.com/api/persons
 Content-Type: application/json
 
 {
