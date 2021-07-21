@@ -1,4 +1,6 @@
-require('dotenv').config()
+if (process.env.NODE_ENV !== 'production') {
+  require('dotenv').config()
+}
 const express = require('express')
 const morgan = require('morgan')
 const cors = require('cors')
@@ -11,7 +13,7 @@ app.use(cors())
 
 app.use(express.static('build'))
 
-morgan.token('body', (request, response) =>{
+morgan.token('body', (request, response) => {
   if (request.body) return JSON.stringify(request.body)
 })
 
@@ -28,21 +30,21 @@ app.use(morgan((tokens, request, response) => {
 
 app.get('/api/persons', (request, response) => {
   console.log('fetching phonebook')
-    Person.find({}).then(persons => {
-      response.json(persons)
-    })
+  Person.find({}).then(persons => {
+    response.json(persons)
+  })
 })
 
 app.get('/info', async (request, response) => {
-    const result = await Person.count({})
-    response.send(
-        `<p>Phonebook has info for ${result} people</p>
+  const result = await Person.count({})
+  response.send(
+    `<p>Phonebook has info for ${result} people</p>
         <p>${new Date()}</p>`)
 })
 
 app.get('/api/persons/:id', async (request, response) => {
-    const result = await Person.findById(request.params.id)
-    return response.json(result)
+  const result = await Person.findById(request.params.id)
+  return response.json(result)
 })
 
 app.delete('/api/persons/:id', (request, response, next) => {
@@ -73,11 +75,11 @@ app.post('/api/persons', (request, response, next) => {
   })
 
   person.save()
-  .then(savedPerson => {
-    console.log(person)
-    response.json(person)
-  })
-  .catch(error => next(error))
+    .then(savedPerson => {
+      console.log(person)
+      response.json(person)
+    })
+    .catch(error => next(error))
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
@@ -108,7 +110,7 @@ const errorHandler = (error, request, response, next) => {
   if (error.name === 'CastError') {
     return response.status(400).send({ error: 'malformatted id' })
   } else if (error.name === 'ValidationError' || error.name === 'ValidatorError') {
-    return response.status(400).json({ error: error.message})
+    return response.status(400).json({ error: error.message })
   }
 
   next(error)
@@ -118,5 +120,5 @@ app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`)
+  console.log(`Server running on port ${PORT}`)
 })
